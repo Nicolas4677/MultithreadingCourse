@@ -15,18 +15,29 @@
  * - std::thread::detach -> Separates execution of the thread, allowing to continue execution until the thread gets terminated.
  * - std::terminate (called from respective thread) -> Terminates the calling thread
  * - Join is a blocking operation, so I'm curious how to make this async work not be blocking
+ * 
+ * Lesson #3: Passing Arguments to Threads
+ * - Unlike C, in C++ it's way easier to pass arguments to threads. So, since the first lesson I had already added argumens.
+ * - Unlike in the video, instead of getting different numbers, I seem to only get number 9 (the last index). I wonder why this is...
  */
 
-void ThreadExecution(std::string msg);
+ struct MyThreadArgs
+ {
+    int m_myInt = 0;
+ };
+
+void ThreadExecution(const MyThreadArgs* args);
 
 int main(int argc, char *argv[])
 {
     static constexpr int8_t threadCount = 10;
     std::thread threads[threadCount];
 
+    MyThreadArgs threadArgs;
     for (size_t idx = 0; idx < threadCount; idx++)
     {
-        threads[idx] = std::thread(ThreadExecution, "Hello World!");
+        threadArgs.m_myInt = idx;
+        threads[idx] = std::thread(ThreadExecution, &threadArgs);
     }
 
     for (size_t idx = 0; idx < threadCount; idx++)
@@ -35,7 +46,7 @@ int main(int argc, char *argv[])
     }
 };
 
-void ThreadExecution(std::string msg)
+void ThreadExecution(const MyThreadArgs* args)
 {
-    std::cout << msg << std::endl;
+    std::cout << args->m_myInt << std::endl;
 };
