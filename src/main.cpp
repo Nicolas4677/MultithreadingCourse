@@ -19,7 +19,14 @@
  * Lesson #3: Passing Arguments to Threads
  * - Unlike C, in C++ it's way easier to pass arguments to threads. So, since the first lesson I had already added argumens.
  * - Unlike in the video, instead of getting different numbers, I seem to only get number 9 (the last index). I wonder why this is...
+ * 
+ * Lesson #4: Understanding Thread Synchronization
+ * - Threads are all running concurrently, and because they're modifying the same memore, they're overriding each other's increments.
+ * - Critical section: Piece of code where if on thread entered it, no other thread can until freed.
+ * - Mutex and semaphores for thread syncronization
  */
+
+ int g_counter = 0;
 
  struct MyThreadArgs
  {
@@ -48,5 +55,10 @@ int main(int argc, char *argv[])
 
 void ThreadExecution(const MyThreadArgs* args)
 {
-    std::cout << args->m_myInt << std::endl;
+    // Critical section
+    for (size_t idx = 0; idx < 1000000; idx++)
+    {
+        g_counter++;
+    }
+    std::cout << "Counter is: " << g_counter << std::endl;
 };
